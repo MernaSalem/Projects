@@ -1,0 +1,9 @@
+SHAP (SHapley Additive exPlanations) is a game theoretic approach to explain the output of any machine learning model. 
+It connects optimal credit allocation with local explanations using the classic Shapley values from game theory and their related extensions
+Why SHAP
+Feature importance told us what matters globally.
+SHAP tells us:
+direction (push toward churn or retention)
+magnitude (how strongly)
+per customer (local explanations)
+This answers:“Why did this customer churn?”
