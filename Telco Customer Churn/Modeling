@@ -1,0 +1,38 @@
+Baseline Models
+Logistic Regression provides a simple baseline and highlights the impact of class imbalance. Recall is crucial because missing churners is more costly than false positives.
+Key Observations
+Accuracy alone would overestimate performance (~80%+)
+Recall is critical — missing churners = business cost
+Decision Tree captures some non-linear effects better than Logistic Regression
+Baseline establishes starting point for improvement
+Hyperparameter tuning
+Ensemble models
+Class imbalance handling (class weights, oversampling)
+
+What the model is telling:
+1. Contract Type dominates
+Month-to-month customers churn far more
+Long-term contracts act as churn friction
+This is structural, not behavioral.
+2. Tenure is protective
+New customers are fragile
+Risk drops sharply after the first year
+Early lifecycle matters more than price.
+3. MonthlyCharges increases churn risk
+Especially when combined with:
+Fiber optic
+Missing support services
+High cost without perceived value triggers exits.
+4. Support add-ons reduce churn
+TechSupport
+OnlineSecurity
+----------------------------------------------------------------------
+Who do we act on, and how?
+Target customers with churn probability > 0.6
+Restrict to:
+Month-to-month contracts
+Tenure < 12 months
+Offer:
+Contract upgrade incentive
+Free TechSupport for 3 months
+"We analyzed customer churn using structured EDA, built baseline and ensemble models, addressed class imbalance, evaluated with ROC-AUC and PR-AUC, and translated predictions into targeted retention strategies driven by interpretable signals."
