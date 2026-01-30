@@ -1,0 +1,128 @@
+What customer churn is (in this dataset)
+
+Why predicting churn matters financially
+
+What success means (early detection, not raw accuracy)
+
+The churn class is imbalanced (about ~26.6% churned vs ~73.4% stayed). That means naïve accuracy is extremely misleading.
+The dataset exhibits a clear class imbalance, with 26.54% of customers having churned. This makes accuracy an unreliable evaluation metric and motivates the use of recall, precision, and F1-score.
+
+The dataset is moderately sized and dominated by categorical features. Initial inspection shows potential data type issues, particularly with TotalCharges.
+
+The tenure distribution shows a concentration of newly acquired customers and a long tail of long-term subscribers, reflecting typical telecom customer lifecycles.
+
+Customers who churn tend to have significantly shorter tenure, indicating early-stage dissatisfaction or unmet expectations.
+Churners often pay more per month
+Price sensitivity is real
+Customers who churn tend to incur higher monthly charges, suggesting cost sensitivity plays a role in churn decisions.
+
+Churners have lower total charges → because they leave early
+Confirms tenure effect again
+
+tenure ↔ TotalCharges strongly correlated (obvious)
+MonthlyCharges weakly correlated with tenure → different dimension of behavior
+
+Churn drivers emerging:
+Short tenure → highest churn risk
+Higher monthly charges → price-driven churn
+Low accumulated value → customers leave early
+indicates: onboarding issues
+           pricing friction
+           weak early customer experience
+
+Next Section — Categorical Feature EDA (Where the Real Story Lives)
+This is where churn truly exposes itself:
+Contract type (month-to-month customers flee)
+Internet service type (fiber users churn more)
+Payment method (electronic check churn spike)
+Tech support & security services reduce churn
+[demographics → services → contracts → payment behavior]
+
+-------------------------------------------------------------------------------------------
+Categorical Features vs Churn
+Helper Function (Reusable, Clean)
+def churn_rate_by_feature(df, feature):
+    churn_table = (
+        df.groupby(feature)["Churn"]
+        .value_counts(normalize=True)
+        .rename("rate")
+        .reset_index()
+    )
+    return churn_table[churn_table["Churn"] == "Yes"].sort_values("rate", ascending=False)
+Why this matters:
+You’re computing churn rate, not raw counts
+This is the metric business actually cares about
+
+Contract Type vs Churn
+churn_rate_by_feature(df, "Contract")
+Month-to-month → highest churn
+One year → much lower
+Two year → lowest churn
+Customers on month-to-month contracts exhibit significantly higher churn rates compared to customers on long-term contracts, highlighting contract commitment as a key retention factor.
+
+Internet Service vs Churn
+Fiber optic customers show higher churn rates, possibly due to higher costs or service expectations compared to DSL users.
+
+Payment Method vs Churn
+Customers using electronic checks exhibit the highest churn rates, suggesting a link between payment convenience, commitment, and customer stability.
+
+Add-on Services
+Customers subscribed to support and security services show substantially lower churn rates, indicating these services increase customer stickiness.
+
+Demographics
+Behavioral and contractual features are more predictive of churn than demographic attributes.
+---------------------------------
+Key churn drivers identified:
+Short tenure
+Month-to-month contracts
+Higher monthly charges
+Fiber optic internet
+Electronic check payments
+Lack of support/security add-ons
+----------------------------------------------------------------------------------------------------
+Data Cleaning & Preprocessing
+
+Cell_9: Split Data
+Why stratify=y:
+Preserves churn ratio
+Essential for imbalanced classification
+
+Cell_10: Define Transformers
+“Why not just encode categories as numbers?”
+Example:
+Month-to-month = 0
+One year = 1
+Two year = 2
+That would be wrong because it invents:
+ordering
+distance
+magnitude
+The model would think:
+Two year is “twice” One year
+Distance between contracts is meaningful
+It isn’t.
+One-hot encoding avoids this lie by:
+separating categories
+making no assumptions about order or distance
+More columns, but honest geometry.
+
+Why SHAP needed the expanded version?
+SHAP explains what the model actually saw.
+The model did NOT see:
+“Contract” as one thing
+It saw:
+Contract_OneYear
+Contract_TwoYear
+So SHAP must operate in that expanded feature space, or the explanation would be fake.
+
+Fit
+fit is the moment where the model and the preprocessing learn structure from the training data and lock it in.
+After fit, nothing is allowed to “learn” anymore — only apply.
+Preprocessing (fit) uses only X
+Model fitting uses X + y
+Why this order matters:
+Preprocessing defines the geometry of the space
+The model learns where labels sit inside that space
+
+“During fit, preprocessing learns feature statistics and category structure from training data, then the model learns decision boundaries within that fixed feature space.
+After fitting, all transformations are deterministic to prevent leakage.”
