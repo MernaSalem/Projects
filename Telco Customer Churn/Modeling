@@ -1,5 +1,6 @@
 Baseline Models
-Logistic Regression provides a simple baseline and highlights the impact of class imbalance. Recall is crucial because missing churners is more costly than false positives.
+Logistic Regression provides a simple baseline and highlights the impact of class imbalance. 
+Recall is crucial because missing churners is more costly than false positives.
 Key Observations
 Accuracy alone would overestimate performance (~80%+)
 Recall is critical — missing churners = business cost
@@ -35,4 +36,5 @@ Tenure < 12 months
 Offer:
 Contract upgrade incentive
 Free TechSupport for 3 months
-"We analyzed customer churn using structured EDA, built baseline and ensemble models, addressed class imbalance, evaluated with ROC-AUC and PR-AUC, and translated predictions into targeted retention strategies driven by interpretable signals."
+"We analyzed customer churn using structured EDA, built baseline and ensemble models, addressed class imbalance, evaluated with ROC-AUC and PR-AUC, 
+and translated predictions into targeted retention strategies driven by interpretable signals."
